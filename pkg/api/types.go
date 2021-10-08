@@ -3,6 +3,7 @@ package api
 import "time"
 
 type Reservation struct {
+	ID       uint
 	Date     time.Time
 	Duration time.Duration
 }

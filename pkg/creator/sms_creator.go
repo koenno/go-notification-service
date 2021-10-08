@@ -7,6 +7,13 @@ import (
 )
 
 type SMSCreator struct {
+	dispatcher chan interface{}
+}
+
+func NewSMSCreator(dispatcher chan interface{}) SMSCreator {
+	return SMSCreator{
+		dispatcher: dispatcher,
+	}
 }
 
 func (c SMSCreator) Create(notif api.Notification) {
