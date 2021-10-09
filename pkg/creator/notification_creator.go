@@ -13,12 +13,12 @@ type NotificationCreator struct {
 	creators []Creator
 }
 
-func NewNotificationCreator(notifs chan api.Notification, dispatcher chan interface{}) NotificationCreator {
+func NewNotificationCreator(notifs chan api.Notification, dispatcherPipe chan interface{}) NotificationCreator {
 	return NotificationCreator{
 		notifs: notifs,
 		creators: []Creator{
-			NewEMailCreator(dispatcher),
-			SMSCreator{},
+			NewEMailCreator(dispatcherPipe),
+			NewSMSCreator(dispatcherPipe),
 		},
 	}
 }

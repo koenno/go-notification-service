@@ -14,12 +14,12 @@ const (
 )
 
 type EMailCreator struct {
-	dispatcher chan interface{}
+	dispatcherPipe chan interface{}
 }
 
 func NewEMailCreator(dispatcher chan interface{}) EMailCreator {
 	return EMailCreator{
-		dispatcher: dispatcher,
+		dispatcherPipe: dispatcher,
 	}
 }
 
@@ -33,7 +33,7 @@ func (c EMailCreator) Create(notif api.Notification) {
 			Subject: c.createSubject(notif),
 			Message: c.createMessage(notif),
 		}
-		c.dispatcher <- email
+		c.dispatcherPipe <- email
 	}
 }
 
@@ -45,12 +45,14 @@ func (c EMailCreator) createMessage(notif api.Notification) string {
 	seatsNumber := english.Plural(notif.Room.SeatsNumber, "seat", "")
 	return fmt.Sprintf(`
 	Hello %s
-	The room "%s" with number %s
+	The reservation %d
+	of the room "%s" with number %s
 	is reserved for %s
 	starting from %s.
 	The room is equipped with %s.
 	To cancel your reservation click here.`,
 		notif.User.Name,
+		notif.Reservation.ID,
 		notif.Room.Name, notif.Room.Number,
 		notif.Reservation.Duration,
 		notif.Reservation.Date.Format(dateLayout),
