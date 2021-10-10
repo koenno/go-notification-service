@@ -10,25 +10,25 @@ import (
 )
 
 type Recipients struct {
-	To  []string
-	CC  []string
-	BCC []string
+	To  []string `json:"to"`
+	CC  []string `json:"cc"`
+	BCC []string `json:"bcc"`
 }
 
 type EMail struct {
-	Recipients Recipients
-	Subject    string
-	Message    string
+	Recipients Recipients `json:"recipients"`
+	Subject    string     `json:"subject"`
+	Message    string     `json:"message"`
 }
 
 const (
-	EMAIL_SENDER_ENV = "EMAIL_SENDER_ADDRESS"
+	EMAIL_GATEWAY_ENV = "EMAIL_GATEWAY_ADDRESS"
 )
 
 func (e EMail) Send() {
-	emailSendEndpoint, exist := config.GetConfig(EMAIL_SENDER_ENV)
+	emailSendEndpoint, exist := config.GetConfig(EMAIL_GATEWAY_ENV)
 	if !exist {
-		log.Printf("ERROR: env %s is not set", EMAIL_SENDER_ENV)
+		log.Printf("ERROR: env %s is not set", EMAIL_GATEWAY_ENV)
 		return
 	}
 	email, err := json.Marshal(e)
