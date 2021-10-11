@@ -25,6 +25,7 @@ func (s NotificationCreator) notifications(w http.ResponseWriter, r *http.Reques
 	contentType := r.Header.Get("Content-Type")
 	if contentType != "application/json" {
 		w.WriteHeader(http.StatusBadRequest)
+		w.Write([]byte("unsupported content type"))
 		log.Println("ERROR: got unsupported content type", contentType)
 		return
 	}
