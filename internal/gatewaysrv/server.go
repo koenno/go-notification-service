@@ -1,4 +1,4 @@
-package creatorsrv
+package gatewaysrv
 
 import (
 	"context"
@@ -13,18 +13,14 @@ import (
 	"github.com/koen-or-nant/go-notification-service/internal/config"
 )
 
-type notifiable interface {
-	notifications(http.ResponseWriter, *http.Request)
-}
-
 type Server struct {
-	srv   *http.Server
-	notif notifiable
+	srv *http.Server
 }
 
-func NewServer(notif notifiable) Server {
+func NewServer() Server {
 	r := mux.NewRouter()
-	r.HandleFunc("/notifications", notif.notifications).Methods("POST")
+	r.HandleFunc("/email", email).Methods("POST")
+	r.HandleFunc("/sms", sms).Methods("POST")
 	if port, exist := config.GetConfig("PORT"); exist {
 		address := fmt.Sprintf("0.0.0.0:%s", port)
 		log.Println("listening on", address)
@@ -37,7 +33,6 @@ func NewServer(notif notifiable) Server {
 				IdleTimeout:  time.Second * 60,
 				Handler:      r,
 			},
-			notif: notif,
 		}
 	}
 	return Server{}
