@@ -5,6 +5,7 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/go-playground/validator"
 	"github.com/koen-or-nant/go-notification-service/pkg/api"
 	"github.com/koen-or-nant/go-notification-service/pkg/types"
 )
@@ -33,6 +34,13 @@ func (s NotificationServer) notifications(w http.ResponseWriter, r *http.Request
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		log.Println("ERROR: unable to decode notification:", err)
+		return
+	}
+	validate := validator.New()
+	err = validate.Struct(notif)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		log.Println("ERROR: required field is not set:", err)
 		return
 	}
 	w.WriteHeader(http.StatusOK)
