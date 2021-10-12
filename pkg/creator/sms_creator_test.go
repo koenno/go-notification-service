@@ -5,12 +5,13 @@ import (
 	"testing"
 
 	"github.com/koen-or-nant/go-notification-service/pkg/dispatcher"
+	"github.com/koen-or-nant/go-notification-service/pkg/types"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestShouldCreateSMS(t *testing.T) {
 	// given
-	dispatcherPipe := make(chan interface{})
+	dispatcherPipe := make(chan types.Sendable)
 	creator := NewSMSCreator(dispatcherPipe)
 	expectedSMS := dispatcher.SMS{
 		TelephoneNumber: "+0123456789",
@@ -33,7 +34,7 @@ func TestShouldCreateSMS(t *testing.T) {
 
 func TestShouldNotCreateSMSIfNotificationIsNotSMSOne(t *testing.T) {
 	// given
-	dispatcherPipe := make(chan interface{})
+	dispatcherPipe := make(chan types.Sendable)
 	creator := NewSMSCreator(dispatcherPipe)
 	notif := getNotification()
 	delete(notif.User.Contact, "sms")

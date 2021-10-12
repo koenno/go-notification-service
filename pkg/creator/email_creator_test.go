@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	"github.com/koen-or-nant/go-notification-service/pkg/dispatcher"
+	"github.com/koen-or-nant/go-notification-service/pkg/types"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -14,7 +15,7 @@ const (
 
 func TestShouldCreateEMail(t *testing.T) {
 	// given
-	dispatcherPipe := make(chan interface{})
+	dispatcherPipe := make(chan types.Sendable)
 	creator := NewEMailCreator(dispatcherPipe)
 	expectedEMail := dispatcher.EMail{
 		Recipients: dispatcher.Recipients{
@@ -42,7 +43,7 @@ func TestShouldCreateEMail(t *testing.T) {
 
 func TestShouldNotCreateEMailIfNotificationIsNotEMailOne(t *testing.T) {
 	// given
-	dispatcherPipe := make(chan interface{})
+	dispatcherPipe := make(chan types.Sendable)
 	creator := NewEMailCreator(dispatcherPipe)
 	notif := getNotification()
 	delete(notif.User.Contact, "email")

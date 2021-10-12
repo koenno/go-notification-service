@@ -24,10 +24,11 @@ func NewServer(notif notifiable) Server {
 	r := mux.NewRouter()
 	r.HandleFunc("/notifications", notif.notifications).
 		Methods("POST")
-
+	address := "0.0.0.0:8080"
+	log.Println("listening on", address)
 	return Server{
 		srv: &http.Server{
-			Addr: "0.0.0.0:8080",
+			Addr: address,
 			// Good practice to set timeouts to avoid Slowloris attacks.
 			WriteTimeout: time.Second * 15,
 			ReadTimeout:  time.Second * 15,

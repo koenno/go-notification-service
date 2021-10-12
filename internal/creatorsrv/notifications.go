@@ -6,26 +6,25 @@ import (
 	"net/http"
 
 	"github.com/koen-or-nant/go-notification-service/pkg/api"
-	"github.com/koen-or-nant/go-notification-service/pkg/dispatcher"
+	"github.com/koen-or-nant/go-notification-service/pkg/types"
 )
 
-type NotificationCreator struct {
+type NotificationServer struct {
 	in  chan api.Notification
-	out chan dispatcher.Sendable
+	out chan types.Sendable
 }
 
-func NewNotificationCreator(in chan api.Notification, out chan dispatcher.Sendable) NotificationCreator {
-	return NotificationCreator{
+func NewNotificationServer(in chan api.Notification, out chan types.Sendable) NotificationServer {
+	return NotificationServer{
 		in:  in,
 		out: out,
 	}
 }
 
-func (s NotificationCreator) notifications(w http.ResponseWriter, r *http.Request) {
+func (s NotificationServer) notifications(w http.ResponseWriter, r *http.Request) {
 	contentType := r.Header.Get("Content-Type")
 	if contentType != "application/json" {
 		w.WriteHeader(http.StatusBadRequest)
-		w.Write([]byte("unsupported content type"))
 		log.Println("ERROR: got unsupported content type", contentType)
 		return
 	}

@@ -6,13 +6,14 @@ import (
 
 	"github.com/koen-or-nant/go-notification-service/pkg/api"
 	"github.com/koen-or-nant/go-notification-service/pkg/dispatcher"
+	"github.com/koen-or-nant/go-notification-service/pkg/types"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestShouldCreateNotifications(t *testing.T) {
 	// given
 	in := make(chan api.Notification)
-	out := make(chan interface{})
+	out := make(chan types.Sendable)
 	creator := NewNotificationCreator(in, out)
 	go func() {
 		creator.Run()

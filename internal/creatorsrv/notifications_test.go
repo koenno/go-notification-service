@@ -9,15 +9,15 @@ import (
 	"time"
 
 	"github.com/koen-or-nant/go-notification-service/pkg/api"
-	"github.com/koen-or-nant/go-notification-service/pkg/dispatcher"
+	"github.com/koen-or-nant/go-notification-service/pkg/types"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestNotifications(t *testing.T) {
 	// given
 	in := make(chan api.Notification)
-	out := make(chan dispatcher.Sendable)
-	notifCreator := NewNotificationCreator(in, out)
+	out := make(chan types.Sendable)
+	notifCreator := NewNotificationServer(in, out)
 	notif := getNotification()
 	payload, _ := json.Marshal(notif)
 	req := httptest.NewRequest(http.MethodPost, "/notifications", bytes.NewReader(payload))
@@ -33,6 +33,39 @@ func TestNotifications(t *testing.T) {
 	defer res.Body.Close()
 	assert.Equal(t, http.StatusOK, res.StatusCode)
 	assert.Equal(t, notif, inNotif)
+}
+
+func TestShouldReturnBadRequestIfNoContentTypeHeader(t *testing.T) {
+	// given
+	in := make(chan api.Notification)
+	out := make(chan types.Sendable)
+	notifCreator := NewNotificationServer(in, out)
+	notif := getNotification()
+	payload, _ := json.Marshal(notif)
+	req := httptest.NewRequest(http.MethodPost, "/notifications", bytes.NewReader(payload))
+	w := httptest.NewRecorder()
+	// when
+	notifCreator.notifications(w, req)
+	// then
+	res := w.Result()
+	defer res.Body.Close()
+	assert.Equal(t, http.StatusBadRequest, res.StatusCode)
+}
+
+func TestShouldReturnBadRequestIfUnableToDecodeJson(t *testing.T) {
+	// given
+	in := make(chan api.Notification)
+	out := make(chan types.Sendable)
+	notifCreator := NewNotificationServer(in, out)
+	payload := []byte("{ ")
+	req := httptest.NewRequest(http.MethodPost, "/notifications", bytes.NewReader(payload))
+	w := httptest.NewRecorder()
+	// when
+	notifCreator.notifications(w, req)
+	// then
+	res := w.Result()
+	defer res.Body.Close()
+	assert.Equal(t, http.StatusBadRequest, res.StatusCode)
 }
 
 func getNotification() api.Notification {

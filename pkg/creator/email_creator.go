@@ -7,6 +7,7 @@ import (
 	"github.com/dustin/go-humanize/english"
 	"github.com/koen-or-nant/go-notification-service/pkg/api"
 	"github.com/koen-or-nant/go-notification-service/pkg/dispatcher"
+	"github.com/koen-or-nant/go-notification-service/pkg/types"
 )
 
 const (
@@ -14,10 +15,10 @@ const (
 )
 
 type EMailCreator struct {
-	dispatcherPipe chan interface{}
+	dispatcherPipe chan types.Sendable
 }
 
-func NewEMailCreator(dispatcher chan interface{}) EMailCreator {
+func NewEMailCreator(dispatcher chan types.Sendable) EMailCreator {
 	return EMailCreator{
 		dispatcherPipe: dispatcher,
 	}

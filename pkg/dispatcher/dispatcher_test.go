@@ -6,12 +6,13 @@ import (
 	"net/http/httptest"
 	"testing"
 
+	"github.com/koen-or-nant/go-notification-service/pkg/types"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestShouldDispatchEMail(t *testing.T) {
 	// given
-	pipe := make(chan Sendable)
+	pipe := make(chan types.Sendable)
 	sendPipe := make(chan EMail)
 	dispatcher := NewDispatcher(pipe)
 	expectedEMail := EMail{
@@ -47,7 +48,7 @@ func TestShouldDispatchEMail(t *testing.T) {
 
 func TestShouldDispatchSMS(t *testing.T) {
 	// given
-	pipe := make(chan Sendable)
+	pipe := make(chan types.Sendable)
 	sendPipe := make(chan SMS)
 	dispatcher := NewDispatcher(pipe)
 	expectedSMS := SMS{

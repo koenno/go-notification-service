@@ -1,0 +1,19 @@
+{
+    "reservation": {
+        "id": 644365,
+        "date": "2021-10-11T15:04:05Z",
+        "duration": 5400000000000
+    },
+    "room": {
+        "name": "Solar Winds",
+        "number": "2F.03",
+        "seatsNumber": 10
+    },
+    "user": {
+        "name": "John Smith",
+        "contact": {
+            "email": "john.smith@company.com",
+            "sms": "+0123456789"
+        }
+    }
+}

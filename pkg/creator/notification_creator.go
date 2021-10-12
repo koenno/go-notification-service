@@ -1,7 +1,10 @@
 package creator
 
 import (
+	"log"
+
 	"github.com/koen-or-nant/go-notification-service/pkg/api"
+	"github.com/koen-or-nant/go-notification-service/pkg/types"
 )
 
 type Creator interface {
@@ -13,18 +16,23 @@ type NotificationCreator struct {
 	creators []Creator
 }
 
-func NewNotificationCreator(notifs chan api.Notification, dispatcherPipe chan interface{}) NotificationCreator {
+type Sendable interface {
+	Send()
+}
+
+func NewNotificationCreator(notifs chan api.Notification, sendPipe chan types.Sendable) NotificationCreator {
 	return NotificationCreator{
 		notifs: notifs,
 		creators: []Creator{
-			NewEMailCreator(dispatcherPipe),
-			NewSMSCreator(dispatcherPipe),
+			NewEMailCreator(sendPipe),
+			NewSMSCreator(sendPipe),
 		},
 	}
 }
 
 func (c NotificationCreator) Run() {
 	for notif := range c.notifs {
+		log.Println("processing reservation", notif.Reservation.ID)
 		for _, creator := range c.creators {
 			creator.Create(notif)
 		}
