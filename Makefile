@@ -1,6 +1,6 @@
-# compile: ## compile
-# 	mkdir -p $(BUILD_DIR)
-# 	CGO_ENABLED=0 GOOS=linux go build -o $(BUILD_DIR)/${APP_NAME} cmd/main.go
+build: ## build container images
+	sudo docker build -t notification_creator --build-arg APP_NAME=notification_creator .
+	sudo docker build -t notification_gateway --build-arg APP_NAME=notification_gateway .
 
 help:  ## print help
 	@grep -E '^[\.a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | \
@@ -15,4 +15,4 @@ test: ## test
 .EXPORT_ALL_VARIABLES:
 BUILD_DIR             ?= build
 
-.PHONY: compile help test
+.PHONY: build help run test

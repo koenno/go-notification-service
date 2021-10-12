@@ -1,0 +1,21 @@
+version: "3.7"
+
+services:
+  notification_creator:
+    image: notification_creator:latest
+    entrypoint: ./notification_creator
+    ports:
+      - 8080:8080
+    environment:
+      PORT: 8080
+      SMS_GATEWAY_ADDRESS: http://notification_gateway:8081/sms
+      EMAIL_GATEWAY_ADDRESS: http://notification_gateway:8081/email
+      PARALLEL_REQUESTS_NO: 10
+
+  notification_gateway:
+    image: notification_gateway:latest
+    entrypoint: ./notification_gateway
+    ports:
+      - 8081:8081
+    environment:
+      PORT: 8081
