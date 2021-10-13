@@ -19,7 +19,8 @@ func TestNotifications(t *testing.T) {
 	out := make(chan types.Sendable)
 	notifCreator := NewNotificationServer(in, out)
 	notif := getNotification()
-	payload, _ := json.Marshal(notif)
+	payload, err := json.Marshal(notif)
+	assert.Nil(t, err)
 	req := httptest.NewRequest(http.MethodPost, "/notifications", bytes.NewReader(payload))
 	req.Header.Set("Content-Type", "application/json")
 	w := httptest.NewRecorder()
@@ -69,7 +70,7 @@ func TestShouldReturnBadRequestIfUnableToDecodeJson(t *testing.T) {
 }
 
 func getNotification() api.Notification {
-	dateLayout := "2006-01-02T15:04:05-0700"
+	dateLayout := "2006-01-02T15:04:05Z"
 	date := "2021-10-11T15:04:05Z"
 	reservationDate, _ := time.Parse(dateLayout, date)
 	return api.Notification{
