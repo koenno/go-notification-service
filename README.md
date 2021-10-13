@@ -12,3 +12,9 @@ docker-compose up -d
 ```
 docker-compose down
 ```
+
+# Send a request to the service
+
+```
+curl -X POST http://localhost:8080/notifications -H "Content-Type: application/json" -d @test/notification.json
+```
